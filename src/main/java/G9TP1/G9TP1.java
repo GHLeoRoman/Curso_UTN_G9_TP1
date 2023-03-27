@@ -3,13 +3,11 @@
  */
 
 package G9TP1;
-import java.io.FileReader;
-import java.util.List;
+import java.io.*;          
 import javax.swing.JOptionPane;
-import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.FileNotFoundException;
-import modelos.Pronosticos;
-import modelos.Resultados;
+//import modelos.Pronosticos[6];
+//import modelos.Resultados[6];
 
 /**
  *
@@ -19,8 +17,6 @@ public class G9TP1 {
 
     static String PathPronostico = "C:\\temp\\pronostico.csv";
     static String PathResultado = "C:\\temp\\resultados.csv";
-    static List <Resultados> listaDeResultados;
-    static List <Pronosticos> listaDePronosticos;
     
     public static void main(String[] args) {
         
@@ -34,16 +30,12 @@ public class G9TP1 {
                                    );
             }
             
-           // if ( leeArchivoResultados()== false) {
-           //     JOptionPane.showMessageDialog( null,
-           //                       "Error detalle: "+ "Error al Cagar datos de Resultados",
-           //                       "Error", JOptionPane.PLAIN_MESSAGE);
-           // }
+            if ( leeArchivoResultados()== false) {
+                JOptionPane.showMessageDialog( null,
+                                  "Error detalle: "+ "Error al Cagar datos de Resultados",
+                                  "Error", JOptionPane.PLAIN_MESSAGE);
+            }
                     
-            imprime();
-            //evaluo();
-            // imprimeresultado;
-
             
         }
         
@@ -56,26 +48,53 @@ public class G9TP1 {
         
     }
     
-    static boolean leeArchivoPronostico(  ) {
+    static boolean leeArchivoPronostico(  ) throws IOException {
         try {
-            
-            // En esta primera línea definimos el archivos que va a ingresar
-            listaDePronosticos = new CsvToBeanBuilder(new FileReader(PathPronostico))
-            // Es necesario definir el tipo de dato que va a generar el objeto que estamos queriendo parsear a partir del CSV
-            .withType(Pronosticos.class)
-            .build()
-            .parse();
+            FileInputStream fis; //  La clase "FileInputStream" sirve para
+                           //referir a archivos.
+            DataInputStream Datos; //  La clase "DataInputStream" sirve para
+                             //leer independientemente del hardware,
+                             //tipos de datos de una "corriente" o
+                             //"stream" que en nuestro caso es un archivo.
+            String renglon = null;
 
-            return false;
-        }
-        catch ( FileNotFoundException | IllegalStateException e ) {
-            JOptionPane.showMessageDialog( null,
-                                  "Error: "+e.getMessage(),"Leyendo Archivo Pronostico",
-                                  JOptionPane.PLAIN_MESSAGE);
+            //  Al instanciar o crear el objeto, abrimos el archivo.
+            fis = new FileInputStream( PathPronostico );
+            Datos = new DataInputStream( fis );
+
+            renglon = Datos.readLine();
             
-            return false ;
+            String Linea[] = renglon.split( "," );
+            
+            while ( renglon != null ) { //  Es "null" si encuentra fin del archivo.
+            System.out.println( renglon );
+            renglon = Datos.readLine();
+        }
+
+        //  Cerramos el archivo.
+        fis.close();
+        return true;
+           
         }
         
+        catch ( FileNotFoundException e ) {
+            System.out.println("""
+                               Archivo inexistente.
+                               El programa se cancela.""");
+            return false;
+            }
+
+        catch ( IOException e ) {
+            System.out.println("""
+                               Error en el uso o cierre del archivo
+                               El programa se cancela.""");
+            return false;
+            }
+
+        catch ( Exception e ) {
+            System.out.println("El programa se cancela.Error.");
+            return false;
+            }
         
     } 
     
@@ -83,52 +102,40 @@ public class G9TP1 {
     static boolean leeArchivoResultados(  ) {
         try {
             
-            // En esta primera línea definimos el archivos que va a ingresar
-            listaDeResultados = new CsvToBeanBuilder(new FileReader(PathResultado))
-            // Es necesario definir el tipo de dato que va a generar el objeto que estamos queriendo parsear a partir del CSV
-            .withType(Resultados.class)
-            .build()
-            .parse();
+            FileInputStream fis; //  La clase "FileInputStream" sirve para
+                           //referir a archivos.
+            DataInputStream Datos; //  La clase "DataInputStream" sirve para
+                             //leer independientemente del hardware,
+                             //tipos de datos de una "corriente" o
+                             //"stream" que en nuestro caso es un archivo.
+            String renglon = null;
 
-           
-            return true;
+            //  Al instanciar o crear el objeto, abrimos el archivo.
+            fis = new FileInputStream( PathResultado );
+            Datos = new DataInputStream( fis );
+
+            renglon = Datos.readLine();
+            while ( renglon != null ) { //  Es "null" si encuentra fin del archivo.
+            System.out.println( renglon );
+            renglon = Datos.readLine();
         }
-        catch ( FileNotFoundException | IllegalStateException e ) {
+
+        //  Cerramos el archivo.
+        fis.close();
+        return true;
+    }
+
+    catch ( FileNotFoundException | IllegalStateException e ) {
             JOptionPane.showMessageDialog( null,
                                   "Error: "+e.getMessage(),"Leyendo Archivo Resultado",
                                   JOptionPane.PLAIN_MESSAGE);
-            
-            return false ;
-        }
-        //*catch ( Exception e ) {
-        //            JOptionPane.showMessageDialog( null,
-        //                          "Error 2: "+e.getMessage(),"Leyendo Archivo Resultado",
-        //                          JOptionPane.PLAIN_MESSAGE);
-        //    return false ;
-        //}
+        return false ;
     }
-    
-    static boolean imprime(  ) {
-        try {
-            //El resultado de este método nos da una lita del objetos
-            for (Pronosticos pronostico : listaDePronosticos) {
-                System.out.println(pronostico.getIdEquipo1()+ ";" );
-            }
-            
-            //El resultado de este método nos da una lita del objetos
-
-            for (Resultados resultado : listaDeResultados) {
-                System.out.println(resultado.getIdEquipo1()+ ";" );
-            }
-            return true;
-        }
-        
-        catch ( Exception e ) {  //  Atrapador genérico de excepciones.
-           System.out.println( "Hubo un error: " + e.getMessage() );
-           return false;
-        }
-   
-
-   }
+    catch ( Exception e ) {
+                    JOptionPane.showMessageDialog( null,
+                                  "Error 2: "+e.getMessage(),"Leyendo Archivo Resultado",
+                                  JOptionPane.PLAIN_MESSAGE);
+            return false ;
+    }
     }
 }
