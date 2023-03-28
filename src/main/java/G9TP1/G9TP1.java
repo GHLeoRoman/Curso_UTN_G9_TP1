@@ -48,6 +48,9 @@ public class G9TP1 {
                  System.out.println("Sin Errores");
             }
             
+            System.out.println("Procesa");
+            procesa();
+            
             System.out.println("Imprime");
             imprime();
              
@@ -165,14 +168,62 @@ public class G9TP1 {
         
         System.out.println("Datos Pronosticos");
         for( int i=0 ; i<VarPronosticos.length ; i++ ) {
-         for( int j=0 ; j<VarPronosticos[i].length ; j++ )
-            System.out.println(VarPronosticos[i][j]);
-            }
-        System.out.println("Datos Resultados");
-        
-         for( int i=0 ; i<VarResultados.length ; i++ ) {
-         for( int j=0 ; j<VarResultados[i].length ; j++ )
-            System.out.println(VarResultados[i][j]);
-            }
+            System.out.println(VarPronosticos[i][0] + " " + VarPronosticos[i][1] + " " + VarPronosticos[i][2]+ " Punto " + VarPronosticos[i][7] );
+        }
+    }
+    
+    static void procesa() {
+        try{
+            for( int p=0 ; p<VarPronosticos.length ; p++ ) {
+
+                for( int r=0 ; r<VarResultados.length ; r++ ) {
+                    //System.out.println("Pronostico : " + p + " Id Equipo 1 : " + VarPronosticos [p] [2] );
+                    if (VarResultados [r] [2] != null) {
+                        //System.out.println("Resultado : " + r + " Id Equipo 1 : " + VarResultados [r] [2] );
+                        if( Integer.parseInt(VarResultados[r] [2]) == Integer.parseInt(VarPronosticos [p] [2]) )  {  // igual equipo 1 )  
+                        //System.out.println("Tengo E1");
+                        if( Integer.parseInt(VarPronosticos [p] [6]) == Integer.parseInt(VarResultados[r] [7]) ) {  // igual equipo 2 )  
+                            //System.out.println("Tengo E2");
+                            int resultado = 0;
+                            
+                            //System.out.println("Resultado E1 : " + VarResultados [p] [5]);
+                            //System.out.println("Resultado E2 : " + VarResultados [p] [6]);
+                            
+                            if (VarResultados [p] [5] !=null && VarResultados [p] [6]!=null ) {
+                              resultado = Integer.parseInt(VarResultados [p] [5]) - Integer.parseInt(VarResultados [p] [6]);
+                              //System.out.println("Resultado del partido : " + resultado);
+                            }                            
+
+                            // Empate
+                            
+                            if( resultado == 0 ) {
+                                if (VarPronosticos [p] [3].equals("X")) {
+                                   VarPronosticos [p] [7] = "1";
+                                }
+                            }
+                            // Gana E1
+                            if( resultado > 0 ) {
+                                if ( VarPronosticos [p] [4].equals("X")) {
+                                    VarPronosticos [p] [7] = "1";
+                                }
+                            }
+                            // Gana E2
+                            if( resultado < 0 ) {
+                                if ( VarPronosticos [p] [5].equals("X") ) {
+                                    VarPronosticos [p] [7] = "1";
+                                    //System.out.println("Asigna resultado Gana E2 ");
+                                    //System.out.println(VarPronosticos [p] [7]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+        catch ( Exception e ) {
+            System.out.println("El programa se cancela.Error." + e.getMessage());
+        }
     }
 }
+        
