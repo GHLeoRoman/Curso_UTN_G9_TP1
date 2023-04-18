@@ -9,7 +9,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Hello world!
@@ -25,12 +27,12 @@ public class App
 
     public static void main( String[] args )  throws Exception
     {
-        System.out.println ("resultados");
+        //System.out.println ("resultados");
         leeresultados();
-        System.out.println ("pronosticos");
+        //System.out.println ("pronosticos");
         leepronosticos();
-        System.out.println ("recorre");
-        recorre();
+        //System.out.println ("recorre");
+        recorre(pronosticos);
     }
 
     private static void leeresultados() {
@@ -129,11 +131,20 @@ public class App
         return 0;
     }
 
-    private static void recorre() {
-        System.out.println ("tamaño de resultado : " + resultados.size());
+    private static void recorre(List<Pronostico> pronostico) {
+        Map<String, Integer> map = pronosticos.stream().collect(
+                Collectors.groupingBy(                            // I want a Map<Integer, Integer>
+                        Pronostico::getParticipantenombre,                              // price is the key
+                        Collectors.summingInt(Pronostico::getPuntos) ) ); // sum of quantities is the va
+
+
+        System.out.println ("Lista de Puntos");
+
         //for( int i=0 ; i<resultados.size() ; i++ )
         //    System.out.println( "Planeta " + (i+1) + ": " + resultados.get(i).. );
         //}
+
+        map.forEach((key, value) -> System.out.println(key + ":" + value));
 
     }
 }

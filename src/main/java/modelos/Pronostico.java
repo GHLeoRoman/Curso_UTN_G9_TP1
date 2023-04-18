@@ -20,6 +20,9 @@ public class Pronostico {
         this.equipo2id = equipo2id;
     }
 
+    public Pronostico(String key, Integer value) {
+    }
+
     public String getParticipanteid() {
         return participanteid;
     }
@@ -83,4 +86,6 @@ public class Pronostico {
     public void setPuntos(int puntos) {
         this.puntos = puntos;
     }
+
+
 }
