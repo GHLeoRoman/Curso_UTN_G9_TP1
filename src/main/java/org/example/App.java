@@ -88,7 +88,8 @@ public class App
                 primera = false;
             } else {
                 String[] campos = lineaPronostico.split(";");
-                Pronostico pronostico = new Pronostico(campos[0],campos[1],campos[2],campos[3],campos[4],campos[5],campos[6]);
+                Pronostico pronostico = new Pronostico(campos[0],campos[1],campos[2],campos[3],
+                        campos[4],campos[5],campos[6],campos[7]);
                 pronostico.setPuntos(calculaPuntos(resultados,pronostico));
                 pronosticos.add(pronostico);
             }
@@ -97,7 +98,10 @@ public class App
 
     public static Integer  calculaPuntos(List<Resultado> resultado, Pronostico pronosticoAux) {
 
-        Optional<Resultado> partidoaux = resultado.stream().filter(a -> a.getEquipo1id().equals(pronosticoAux.getEquipo1id()) && a.getEquipo2id().equals(pronosticoAux.getEquipo2id())).findFirst();
+        Optional<Resultado> partidoaux = resultado.stream().filter(a -> a.getEquipo1id().equals(pronosticoAux.getEquipo1id())
+                && a.getEquipo2id().equals(pronosticoAux.getEquipo2id())
+                && a.getRondaid().equals(pronosticoAux.getRondaid())
+        ).findFirst();
 
 
         if (!partidoaux.isPresent()) {
@@ -140,6 +144,17 @@ public class App
         System.out.println ("Lista de Puntos");
 
         map.forEach((key, value) -> System.out.println(key + ":" + value));
+
+        Map<String, Map<String, Integer>> map2 = pronosticos.stream()
+                .collect(
+                        Collectors.groupingBy(Pronostico::getRondaid,
+                                Collectors.groupingBy(Pronostico::getParticipantenombre,
+                                        Collectors.summingInt(Pronostico::getPuntos))));
+
+        System.out.println ("Lista de Puntos x Ronda");
+
+        map2.forEach((key, value) -> System.out.println(key + ":" + value));
+
 
     }
 }

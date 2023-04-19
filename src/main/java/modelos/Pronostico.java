@@ -1,6 +1,8 @@
 package modelos;
 
 public class Pronostico {
+
+    private String Rondaid;
     private String participanteid;
     private String participantenombre;
     private String equipo1id;
@@ -10,7 +12,8 @@ public class Pronostico {
     private String equipo2id;
     private int puntos;
 
-    public Pronostico(String participanteid, String participantenombre, String equipo1id, String gana1, String empata, String gana2, String equipo2id) {
+    public Pronostico(String Rondaid , String participanteid, String participantenombre, String equipo1id, String gana1, String empata, String gana2, String equipo2id) {
+        this.Rondaid = Rondaid;
         this.participanteid = participanteid;
         this.participantenombre = participantenombre;
         this.equipo1id = equipo1id;
@@ -25,6 +28,14 @@ public class Pronostico {
 
     public String getParticipanteid() {
         return participanteid;
+    }
+
+    public String getRondaid() {
+        return Rondaid;
+    }
+
+    public void setRondaid(String rondaid) {
+        Rondaid = rondaid;
     }
 
     public void setParticipanteid(String participanteid) {
