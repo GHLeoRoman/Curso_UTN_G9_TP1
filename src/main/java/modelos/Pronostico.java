@@ -1,5 +1,8 @@
 package modelos;
 
+import java.util.List;
+import java.util.Optional;
+
 public class Pronostico {
 
     private String Rondaid;
@@ -98,5 +101,42 @@ public class Pronostico {
         this.puntos = puntos;
     }
 
+    public static Integer  calculaPuntos(List<Resultado> resultado, Pronostico pronosticoAux) {
+
+        Optional<Resultado> partidoaux = resultado.stream().filter(a -> a.getEquipo1id().equals(pronosticoAux.getEquipo1id())
+                && a.getEquipo2id().equals(pronosticoAux.getEquipo2id())
+                && a.getRondaid().equals(pronosticoAux.getRondaid())
+        ).findFirst();
+
+
+        if (!partidoaux.isPresent()) {
+            // Excepcion
+            System.out.print("Partido no encontrado");
+        } else
+        {
+            Resultado partido = partidoaux.get();
+            if (pronosticoAux.getGana1().equals("X")) {
+                if (partido.getEquipo1cantidadgoles() > partido.getEquipo2cantidadgoles()) {
+                    // asigno puntos
+                    return 1;
+                }
+            }
+
+            if (pronosticoAux.getGana2().equals("X")) {
+                if (partido.getEquipo1cantidadgoles() < partido.getEquipo2cantidadgoles()) {
+                    // asigno puntos
+                    return 1;
+                }
+            }
+
+            if (pronosticoAux.getEmpata().equals("X")) {
+                if (partido.getEquipo1cantidadgoles() == partido.getEquipo2cantidadgoles()) {
+                    // asigno puntos
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
 
 }

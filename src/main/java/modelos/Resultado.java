@@ -15,6 +15,7 @@ public class Resultado {
         private String Equipo2nombre;
         private String Equipo2descripcion;
 
+
         public Resultado() {
         }
 

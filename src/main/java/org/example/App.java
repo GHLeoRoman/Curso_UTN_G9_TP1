@@ -90,13 +90,13 @@ public class App
                 String[] campos = lineaPronostico.split(";");
                 Pronostico pronostico = new Pronostico(campos[0],campos[1],campos[2],campos[3],
                         campos[4],campos[5],campos[6],campos[7]);
-                pronostico.setPuntos(calculaPuntos(resultados,pronostico));
+                pronostico.setPuntos(pronostico.calculaPuntos(resultados,pronostico));
                 pronosticos.add(pronostico);
             }
         }
     }
 
-    public static Integer  calculaPuntos(List<Resultado> resultado, Pronostico pronosticoAux) {
+    public static Integer  calculaPuntosII(List<Resultado> resultado, Pronostico pronosticoAux) {
 
         Optional<Resultado> partidoaux = resultado.stream().filter(a -> a.getEquipo1id().equals(pronosticoAux.getEquipo1id())
                 && a.getEquipo2id().equals(pronosticoAux.getEquipo2id())
@@ -141,7 +141,7 @@ public class App
                         Pronostico::getParticipantenombre,                              // price is the key
                         Collectors.summingInt(Pronostico::getPuntos) ) ); // sum of quantities is the va
 
-        System.out.println ("Lista de Puntos");
+        System.out.println ("Lista de Puntos Totales ");
 
         map.forEach((key, value) -> System.out.println(key + ":" + value));
 
