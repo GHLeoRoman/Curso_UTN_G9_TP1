@@ -137,12 +137,7 @@ public class App
                         Pronostico::getParticipantenombre,                              // price is the key
                         Collectors.summingInt(Pronostico::getPuntos) ) ); // sum of quantities is the va
 
-
         System.out.println ("Lista de Puntos");
-
-        //for( int i=0 ; i<resultados.size() ; i++ )
-        //    System.out.println( "Planeta " + (i+1) + ": " + resultados.get(i).. );
-        //}
 
         map.forEach((key, value) -> System.out.println(key + ":" + value));
 
