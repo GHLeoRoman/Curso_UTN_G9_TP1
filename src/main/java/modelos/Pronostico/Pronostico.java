@@ -103,7 +103,7 @@ public class Pronostico {
         this.puntos = puntos;
     }
 
-    public static Integer  calculaPuntos(List<Resultado> resultado, Pronostico pronosticoAux) {
+    public static Integer  calculaPuntos(List<Resultado> resultado, Pronostico pronosticoAux) throws ExceptionBuscaResultado {
 
         Optional<Resultado> partidoaux = resultado.stream().filter(a -> a.getEquipo1id().equals(pronosticoAux.getEquipo1id())
                 && a.getEquipo2id().equals(pronosticoAux.getEquipo2id())
@@ -113,7 +113,11 @@ public class Pronostico {
 
         if (!partidoaux.isPresent()) {
             // Excepcion
-            System.out.print("Partido no encontrado");
+            //System.out.print("Partido no encontrado");
+            throw new ExceptionBuscaResultado("Partido no encontrado , Ronda " +
+                    pronosticoAux.getRondaid().toString() + ", Equipo 1 : "  + pronosticoAux.getEquipo1id() +
+                    ", Equipo2 : " + pronosticoAux.getEquipo2id().toString());
+
         } else
         {
             Resultado partido = partidoaux.get();

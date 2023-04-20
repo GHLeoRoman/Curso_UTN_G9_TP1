@@ -1,5 +1,6 @@
 package dominioTest;
 
+import modelos.Pronostico.ExceptionBuscaResultado;
 import modelos.Pronostico.Pronostico;
 import modelos.Resultado.Resultado;
 import org.junit.jupiter.api.Assertions;
@@ -11,7 +12,7 @@ import java.util.List;
 public class PronosticoTest {
 
     @Test
-    public void PronosticoTest1() {
+    public void PronosticoTest1() throws ExceptionBuscaResultado {
 
         List<Resultado> resultados = new ArrayList<>();
         List<Pronostico> pronosticos = new ArrayList<>();

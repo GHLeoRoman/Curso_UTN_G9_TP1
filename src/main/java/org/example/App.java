@@ -1,8 +1,7 @@
 package org.example;
 
-import modelos.Pronostico.ExcepctionCargaPronostico;
+import modelos.Pronostico.ExceptionBuscaResultado;
 import modelos.Pronostico.Pronostico;
-import modelos.Resultado.ExceptionCargaResultado;
 import modelos.Resultado.Resultado;
 
 import java.io.IOException;
@@ -20,10 +19,7 @@ import java.sql.*;
 import static conexion.sql.ConectorSQL.DB_URL;
 import static conexion.sql.ConectorSQL.USER;
 import static conexion.sql.ConectorSQL.PASS;
-/**
- * Hello world!
- *
- */
+
 public class App 
 {
     static List<Resultado> resultados = new ArrayList<>();
@@ -52,60 +48,75 @@ public class App
             }
     }
 
-    private static void leeResultadosDesdeArchivo() throws ExceptionCargaResultado {
+    private static void leeResultadosDesdeArchivo()   {
         // Leer resultados
         Path ruta  = Paths.get(pathResultado);
         List<String> lineaResultado = null;
-        lineaResultado = Files.readAllLines(ruta);
-        throw new ExceptionCargaResultado("No se pudo leer la linea de Resultados...");
+        try {
+            lineaResultado = Files.readAllLines(ruta);
+        } catch (IOException e) {
+            System.out.println("No se pudo leer el Archivo Resultados...");
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
 
-        boolean primera = true;
+        boolean primera;
+        primera = true;
         for (String linea : lineaResultado) {
             if (primera) {
                 primera = false;
             } else {
                 String[] campos = linea.split(";");
 
-                Resultado resultado = new Resultado();
-                resultado.setRondaid(campos[0]);
-                resultado.setRondanro(campos[1]);
-                resultado.setEquipo1id(campos[2]);
-                resultado.setEquipo1nombre(campos[3]);
-                resultado.setEquipo1descripcion(campos[4]);
-                resultado.setEquipo1cantidadgoles(Integer.parseInt(campos[5]));
-                resultado.setEquipo2cantidadgoles(Integer.parseInt(campos[6]));
-                resultado.setEquipo2id(campos[7]);
-                resultado.setEquipo2nombre(campos[8]);
-                resultado.setEquipo2descripcion(campos[9]);
-                resultados.add(resultado);
-                throw new ExceptionCargaResultado("Error de datos en la linea de Resultados...");
+                try {
+                    Resultado resultado = new Resultado();
+                    resultado.setRondaid(campos[0]);
+                    resultado.setRondanro(campos[1]);
+                    resultado.setEquipo1id(campos[2]);
+                    resultado.setEquipo1nombre(campos[3]);
+                    resultado.setEquipo1descripcion(campos[4]);
+                    resultado.setEquipo1cantidadgoles(Integer.parseInt(campos[5]));
+                    resultado.setEquipo2cantidadgoles(Integer.parseInt(campos[6]));
+                    resultado.setEquipo2id(campos[7]);
+                    resultado.setEquipo2nombre(campos[8]);
+                    resultado.setEquipo2descripcion(campos[9]);
+                    resultados.add(resultado);
+
+                } catch (Exception e) {
+                    System.out.println("No se pudo leer la linea de Resultado :  " + linea );
+                    System.out.println(e.getMessage());
+                    //System.exit(1);
+                }
             }
         }
     }
 
     private static void leePronosticosDesdeArchivo(){
-
-
         Path ruta = Paths.get(pathPronostico);
-        List<String> lineasPronostico = null;
+        List<String> lineaPronostico = null;
         try {
-            lineasPronostico = Files.readAllLines(ruta);
+            lineaPronostico = Files.readAllLines(ruta);
         } catch (IOException e) {
-            System.out.println("No se pudo leer la linea de pronosticos...");
+            System.out.println("No se pudo abrir el Archivo Pronosticos...");
             System.out.println(e.getMessage());
             System.exit(1);
         }
         boolean primera;
         primera = true;
-        for (String lineaPronostico : lineasPronostico) {
+        for (String linea : lineaPronostico) {
             if (primera) {
                 primera = false;
             } else {
-                String[] campos = lineaPronostico.split(";");
-                Pronostico pronostico = new Pronostico(campos[0],campos[1],campos[2],campos[3],
-                        campos[4],campos[5],campos[6],campos[7]);
-                pronostico.setPuntos(pronostico.calculaPuntos(resultados,pronostico));
-                pronosticos.add(pronostico);
+                String[] campos = linea.split(";");
+                try {
+                    Pronostico pronostico = new Pronostico(campos[0], campos[1], campos[2], campos[3],
+                            campos[4], campos[5], campos[6], campos[7]);
+                            pronostico.setPuntos(pronostico.calculaPuntos(resultados,pronostico));
+                            pronosticos.add(pronostico);
+                    } catch (Exception e) {
+                        System.out.println("No se pudo Tratar la linea de Pronostico :  " + linea );
+                        System.out.println(e.getMessage());
+                    }
             }
         }
     }
@@ -203,19 +214,22 @@ public class App
 
             // Obtener las distintas filas de la consulta
             while (rs.next()) {
-            Pronostico pronostico = new Pronostico(rs.getString("Rondaid"),rs.getString("participanteid"),
-                    rs.getString("participantenombre") , rs.getString("equipo1id"),rs.getString("gana1"),
-                    rs.getString("empata"),rs.getString("gana2"),
-                    rs.getString("equipo2id"));
-
-                pronostico.setPuntos(pronostico.calculaPuntos(resultados,pronostico));
-                pronosticos.add(pronostico);
+                try {
+                    Pronostico pronostico = new Pronostico(rs.getString("Rondaid"),rs.getString("participanteid"),
+                            rs.getString("participantenombre") , rs.getString("equipo1id"),rs.getString("gana1"),
+                            rs.getString("empata"),rs.getString("gana2"),
+                            rs.getString("equipo2id"));
+                        pronostico.setPuntos(pronostico.calculaPuntos(resultados,pronostico));
+                        pronosticos.add(pronostico);
+                } catch ( Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
             // Esto se utiliza par cerrar la conexión con la base de datos
             rs.close();
             consulta.close();
             conexion.close();
-        } catch (SQLException se) {
+        } catch (SQLException  se) {
             // Execpción ante problemas de conexión
             se.printStackTrace();
         } finally {
