@@ -1,4 +1,4 @@
-package modelos;
+package modelos.Resultado;
 
 import java.util.List;
 import java.util.Optional;

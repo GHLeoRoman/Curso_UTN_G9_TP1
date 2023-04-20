@@ -1,7 +1,7 @@
 package dominioTest;
 
-import modelos.Pronostico;
-import modelos.Resultado;
+import modelos.Pronostico.Pronostico;
+import modelos.Resultado.Resultado;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

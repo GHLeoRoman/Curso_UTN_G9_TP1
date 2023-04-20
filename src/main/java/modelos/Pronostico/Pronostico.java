@@ -1,4 +1,6 @@
-package modelos;
+package modelos.Pronostico;
+
+import modelos.Resultado.Resultado;
 
 import java.util.List;
 import java.util.Optional;

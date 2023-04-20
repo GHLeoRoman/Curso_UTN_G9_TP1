@@ -1,7 +1,9 @@
 package org.example;
 
-import modelos.Pronostico;
-import modelos.Resultado;
+import modelos.Pronostico.ExcepctionCargaPronostico;
+import modelos.Pronostico.Pronostico;
+import modelos.Resultado.ExceptionCargaResultado;
+import modelos.Resultado.Resultado;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,7 +13,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import java.sql.*;
@@ -51,23 +52,20 @@ public class App
             }
     }
 
-    private static void leeResultadosDesdeArchivo() {
+    private static void leeResultadosDesdeArchivo() throws ExceptionCargaResultado {
         // Leer resultados
         Path ruta  = Paths.get(pathResultado);
         List<String> lineaResultado = null;
-        try {
-            lineaResultado = Files.readAllLines(ruta);
-        } catch (IOException e) {
-            System.out.println("No se pudo leer la linea de resultados...");
-            System.out.println(e.getMessage());
-            System.exit(1);
-        }
+        lineaResultado = Files.readAllLines(ruta);
+        throw new ExceptionCargaResultado("No se pudo leer la linea de Resultados...");
+
         boolean primera = true;
         for (String linea : lineaResultado) {
             if (primera) {
                 primera = false;
             } else {
                 String[] campos = linea.split(";");
+
                 Resultado resultado = new Resultado();
                 resultado.setRondaid(campos[0]);
                 resultado.setRondanro(campos[1]);
@@ -79,8 +77,8 @@ public class App
                 resultado.setEquipo2id(campos[7]);
                 resultado.setEquipo2nombre(campos[8]);
                 resultado.setEquipo2descripcion(campos[9]);
-
                 resultados.add(resultado);
+                throw new ExceptionCargaResultado("Error de datos en la linea de Resultados...");
             }
         }
     }
@@ -226,12 +224,6 @@ public class App
                 if (consulta != null)
                     consulta.close();
             } catch (SQLException se2) {
-            }
-            try {
-                if (conexion != null)
-                    conexion.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
             }
         }
 
