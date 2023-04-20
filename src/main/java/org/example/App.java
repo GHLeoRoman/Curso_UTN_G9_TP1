@@ -206,7 +206,7 @@ public class App
             // Obtener las distintas filas de la consulta
             while (rs.next()) {
             Pronostico pronostico = new Pronostico(rs.getString("Rondaid"),rs.getString("participanteid"),
-                    ,rs.getString("participantenombre") , rs.getString("equipo1id"),rs.getString("gana1"),
+                    rs.getString("participantenombre") , rs.getString("equipo1id"),rs.getString("gana1"),
                     rs.getString("empata"),rs.getString("gana2"),
                     rs.getString("equipo2id"));
 
