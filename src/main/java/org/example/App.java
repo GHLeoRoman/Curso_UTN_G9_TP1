@@ -1,6 +1,5 @@
 package org.example;
 
-import modelos.Pronostico.ExceptionBuscaResultado;
 import modelos.Pronostico.Pronostico;
 import modelos.Resultado.Resultado;
 
@@ -31,7 +30,7 @@ public class App
     static Connection conexion = null;
     static Statement consulta = null;
 
-    static String Etapa = "3";
+    static String Etapa = "2";
 
     public static void main( String[] args )  throws Exception
     {
