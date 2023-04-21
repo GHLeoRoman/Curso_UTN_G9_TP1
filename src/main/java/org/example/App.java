@@ -1,5 +1,6 @@
 package org.example;
 
+import modelos.Pronostico.ExceptionBuscaPuntos;
 import modelos.Pronostico.Pronostico;
 import modelos.Resultado.Resultado;
 
@@ -30,7 +31,7 @@ public class App
     static Connection conexion = null;
     static Statement consulta = null;
 
-    static String Etapa = "2";
+    static String Etapa = "3";
 
     public static void main( String[] args )  throws Exception
     {
@@ -109,9 +110,16 @@ public class App
                 String[] campos = linea.split(";");
                 try {
                     Pronostico pronostico = new Pronostico(campos[0], campos[1], campos[2], campos[3],
-                            campos[4], campos[5], campos[6], campos[7]);
-                            pronostico.setPuntos(pronostico.calculaPuntos(resultados,pronostico));
-                            pronosticos.add(pronostico);
+                        campos[4], campos[5], campos[6], campos[7]);
+                        Integer p=0;
+                        try {
+                            p = pronostico.calculaPuntos(resultados,pronostico);
+                        } catch (ExceptionBuscaPuntos exceptionBuscaPuntos)
+                        {
+                            p=0;
+                        }
+                        pronostico.setPuntos(p);
+                        pronosticos.add(pronostico);
                     } catch (Exception e) {
                         System.out.println("No se pudo Tratar la linea de Pronostico :  " + linea );
                         System.out.println(e.getMessage());
@@ -153,9 +161,7 @@ public class App
             System.out.println("Creating statement...");
             consulta = conexion.createStatement();
             String sql;
-            sql = "SELECT Rondaid , Rondanro , Equipo1id , Equipo1nombre ," +
-                    "Equipo1descripcion ,Equipo1cantidadgoles , Equipo2cantidadgoles , " +
-                    "Equipo2id , Equipo2nombre , Equipo2descripcion FROM prode.resultados";
+            sql = "SELECT * FROM resultado";
             //En la variable resultado obtendremos las distintas filas que nos devolvió la base
             ResultSet rs = consulta.executeQuery(sql);
 
@@ -207,7 +213,7 @@ public class App
             System.out.println("Creating statement...");
             consulta = conexion.createStatement();
             String sql;
-            sql = "SELECT Rondaid , participanteid , participantenombre , equipo1id , gana1 , empata , gana2 , FROM prode.resultados";
+            sql = "SELECT * FROM pronostico";
             //En la variable resultado obtendremos las distintas filas que nos devolvió la base
             ResultSet rs = consulta.executeQuery(sql);
 
@@ -218,8 +224,15 @@ public class App
                             rs.getString("participantenombre") , rs.getString("equipo1id"),rs.getString("gana1"),
                             rs.getString("empata"),rs.getString("gana2"),
                             rs.getString("equipo2id"));
-                        pronostico.setPuntos(pronostico.calculaPuntos(resultados,pronostico));
-                        pronosticos.add(pronostico);
+                            Integer p=0;
+                    try {
+                        p = pronostico.calculaPuntos(resultados,pronostico);
+                    } catch (ExceptionBuscaPuntos exceptionBuscaPuntos)
+                    {
+                        p=0;
+                    }
+                    pronostico.setPuntos(p);
+                    pronosticos.add(pronostico);
                 } catch ( Exception e) {
                     System.out.println(e.getMessage());
                 }
