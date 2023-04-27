@@ -5,12 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70a12159-83b8-4e27-a4a9-900ae3e75525" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/modelos/Equipo/Equipo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/modelos/Partido/Partido.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/modelos/Persona/Persona.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/modelos/Ronda/Ronda.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/conexion/sql/ConectorSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/conexion/sql/ConectorSQL.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/modelos/Pronostico/ExceptionBuscaPuntos.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/modelos/Pronostico/ExceptionBuscaPuntos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/modelos/Pronostico/Pronostico.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/modelos/Pronostico/Pronostico.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/modelos/Resultado/Resultado.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/modelos/Pronostico/ExceptionBuscaPuntos.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/modelos/Pronostico/ExceptionBuscaPuntos.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/dominioTest/PronosticoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dominioTest/PronosticoTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/modelos/Pronostico/Pronostico.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/modelos/Pronostico/Pronostico.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/modelos/Resultado/Resultado.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/org/example/App.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/App.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -111,27 +116,24 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/App.java</url>
-          <line>85</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/example/App.java</url>
-          <line>113</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/modelos/Pronostico/Pronostico.java</url>
-          <line>107</line>
+          <line>117</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />
           </properties>
-          <option name="timeStamp" value="19" />
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="java.util.HashMap$Node" memberName="key" />
+        <PinnedItemInfo parentTag="java.lang.Long" memberName="value" />
+      </pinned-members>
+    </pin-to-top-manager>
     <watches-manager>
       <configuration name="Application">
         <watch expression="o.get(1)" />
+        <watch expression="((HashMap.Node)((HashMap)value).entrySet().toArray()[0]).getValue()" custom="java.util.HashMap.Node,java.util.HashMap" />
       </configuration>
     </watches-manager>
   </component>

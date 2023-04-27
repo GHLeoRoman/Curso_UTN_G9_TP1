@@ -1,147 +1,76 @@
 package modelos.Pronostico;
 
-import modelos.Resultado.Resultado;
+import modelos.EnumResultado;
+import modelos.Partido.Partido;
+import modelos.Persona.Persona;
 
-import java.util.List;
-import java.util.Optional;
 
 public class Pronostico {
 
-    private String Rondaid;
-    private String participanteid;
-    private String participantenombre;
-    private String equipo1id;
-    private String gana1;
-    private String empata;
-    private String gana2;
-    private String equipo2id;
-    private int puntos;
+    private Persona persona ;
+    private Partido partido;
+    private EnumResultado resultado; // siempre se pone el resultado del equipo1
+    private  boolean valor;
+    private Integer puntos;
 
-    public Pronostico(String Rondaid , String participanteid, String participantenombre, String equipo1id, String gana1, String empata, String gana2, String equipo2id) {
-        this.Rondaid = Rondaid;
-        this.participanteid = participanteid;
-        this.participantenombre = participantenombre;
-        this.equipo1id = equipo1id;
-        this.gana1 = gana1;
-        this.empata = empata;
-        this.gana2 = gana2;
-        this.equipo2id = equipo2id;
+     public Pronostico( Persona persona , Partido partido, EnumResultado resultado, boolean valor , Integer puntos) {
+         this.persona = persona;
+         this.partido = partido;
+         this.resultado = resultado;
+         this.valor = valor;
+         this.puntos = puntos;
     }
 
-    public Pronostico(String key, Integer value) {
+    public boolean isValor() {
+        return valor;
     }
 
-    public String getParticipanteid() {
-        return participanteid;
+    public void setValor(boolean puntos) {
+        this.valor = puntos;
     }
 
-    public String getRondaid() {
-        return Rondaid;
+
+    public Partido getPartido() {
+        return partido;
     }
 
-    public void setRondaid(String rondaid) {
-        Rondaid = rondaid;
+    public void setPartido(Partido partido) {
+        this.partido = partido;
     }
 
-    public void setParticipanteid(String participanteid) {
-        this.participanteid = participanteid;
+    public EnumResultado getResultado() {
+        return resultado;
     }
 
-    public String getParticipantenombre() {
-        return participantenombre;
+    public void setResultado(EnumResultado resultado) {
+        this.resultado = resultado;
     }
 
-    public void setParticipantenombre(String participantenombre) {
-        this.participantenombre = participantenombre;
+    public Persona getPersona() {
+        return persona;
     }
 
-    public String getEquipo1id() {
-        return equipo1id;
+    public String  getNombrePersona() {
+        return persona.getNombre();
     }
 
-    public void setEquipo1id(String equipo1id) {
-        this.equipo1id = equipo1id;
+    public String getPersonaid() {
+         return persona.getIdPersona();
+    }
+    public String  getRondaidPartido() {
+        return partido.getRondaid();
     }
 
-    public String getGana1() {
-        return gana1;
+    public void setPersona(Persona persona) {
+        this.persona = persona;
     }
 
-    public void setGana1(String gana1) {
-        this.gana1 = gana1;
-    }
-
-    public String getEmpata() {
-        return empata;
-    }
-
-    public void setEmpata(String empata) {
-        this.empata = empata;
-    }
-
-    public String getGana2() {
-        return gana2;
-    }
-
-    public void setGana2(String gana2) {
-        this.gana2 = gana2;
-    }
-
-    public String getEquipo2id() {
-        return equipo2id;
-    }
-
-    public void setEquipo2id(String equipo2id) {
-        this.equipo2id = equipo2id;
-    }
-
-    public int getPuntos() {
+      public Integer getPuntos() {
         return puntos;
     }
 
-    public void setPuntos(int puntos) {
+    public void setPuntos(Integer puntos) {
         this.puntos = puntos;
     }
-
-    public static Integer  calculaPuntos(List<Resultado> resultado, Pronostico pronosticoAux) throws ExceptionBuscaPuntos {
-
-        Optional<Resultado> partidoaux = resultado.stream().filter(a -> a.getEquipo1id().equals(pronosticoAux.getEquipo1id())
-                && a.getEquipo2id().equals(pronosticoAux.getEquipo2id())
-                && a.getRondaid().equals(pronosticoAux.getRondaid())
-        ).findFirst();
-
-
-        if (!partidoaux.isPresent()) {
-            // Excepcion
-            //System.out.print("Partido no encontrado");
-            throw new ExceptionBuscaPuntos("Partido no encontrado , Ronda " +
-                    pronosticoAux.getRondaid().toString() + ", Equipo 1 : "  + pronosticoAux.getEquipo1id() +
-                    ", Equipo2 : " + pronosticoAux.getEquipo2id().toString());
-        } else
-        {
-            Resultado partido = partidoaux.get();
-            if (pronosticoAux.getGana1().equals("X")) {
-                if (partido.getEquipo1cantidadgoles() > partido.getEquipo2cantidadgoles()) {
-                    // asigno puntos
-                    return 1;
-                }
-            }
-
-            if (pronosticoAux.getGana2().equals("X")) {
-                if (partido.getEquipo1cantidadgoles() < partido.getEquipo2cantidadgoles()) {
-                    // asigno puntos
-                    return 1;
-                }
-            }
-
-            if (pronosticoAux.getEmpata().equals("X")) {
-                if (partido.getEquipo1cantidadgoles() == partido.getEquipo2cantidadgoles()) {
-                    // asigno puntos
-                    return 1;
-                }
-            }
-        }
-        return 0;
-    }
-
 }
+

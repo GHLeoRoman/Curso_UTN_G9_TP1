@@ -1,8 +1,12 @@
 package org.example;
 
+import modelos.EnumResultado;
+import modelos.Equipo.Equipo;
+import modelos.Persona.Persona;
 import modelos.Pronostico.ExceptionBuscaPuntos;
 import modelos.Pronostico.Pronostico;
-import modelos.Resultado.Resultado;
+import modelos.Partido.Partido;
+import modelos.Ronda.Ronda;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import java.sql.*;
@@ -19,11 +24,14 @@ import java.sql.*;
 import static conexion.sql.ConectorSQL.DB_URL;
 import static conexion.sql.ConectorSQL.USER;
 import static conexion.sql.ConectorSQL.PASS;
+import static javax.management.Query.value;
 
 public class App 
 {
-    static List<Resultado> resultados = new ArrayList<>();
+    static List<Persona> personas = new ArrayList<>();
+    static List<Partido> partidos = new ArrayList<>();
     static List<Pronostico> pronosticos = new ArrayList<>();
+    static List<Ronda> rondas = new ArrayList<>();
 
     static String pathResultado = "C:\\temp\\resultados.csv";
     static String pathPronostico = "C:\\temp\\pronostico.csv";
@@ -31,13 +39,14 @@ public class App
     static Connection conexion = null;
     static Statement consulta = null;
 
-    static String Etapa = "3";
+    static String Etapa = "2";
 
     public static void main( String[] args )  throws Exception
     {
         if ( Etapa == "2" ) {
             leeResultadosDesdeArchivo();
             leePronosticosDesdeArchivo();
+            asignaBonus();
             recorre(pronosticos);
             }
             else
@@ -69,19 +78,14 @@ public class App
                 String[] campos = linea.split(";");
 
                 try {
-                    Resultado resultado = new Resultado();
-                    resultado.setRondaid(campos[0]);
-                    resultado.setRondanro(campos[1]);
-                    resultado.setEquipo1id(campos[2]);
-                    resultado.setEquipo1nombre(campos[3]);
-                    resultado.setEquipo1descripcion(campos[4]);
-                    resultado.setEquipo1cantidadgoles(Integer.parseInt(campos[5]));
-                    resultado.setEquipo2cantidadgoles(Integer.parseInt(campos[6]));
-                    resultado.setEquipo2id(campos[7]);
-                    resultado.setEquipo2nombre(campos[8]);
-                    resultado.setEquipo2descripcion(campos[9]);
-                    resultados.add(resultado);
+                    Equipo equipo1 = new Equipo(campos[2],campos[3] , campos[4]);
+                    Equipo equipo2 = new Equipo(campos[7],campos[8] , campos[9]);
+                    // busco a ronda
+                    Ronda rondaAux = buscoRonda(campos[0],campos[1]);
 
+                    Partido resultado = new Partido(rondaAux ,equipo1, Integer.parseInt(campos[5]),
+                            Integer.parseInt(campos[6]),equipo2);
+                    partidos.add(resultado);
                 } catch (Exception e) {
                     System.out.println("No se pudo leer la linea de Resultado :  " + linea );
                     System.out.println(e.getMessage());
@@ -109,17 +113,35 @@ public class App
             } else {
                 String[] campos = linea.split(";");
                 try {
-                    Pronostico pronostico = new Pronostico(campos[0], campos[1], campos[2], campos[3],
-                        campos[4], campos[5], campos[6], campos[7]);
-                        Integer p=0;
-                        try {
-                            p = pronostico.calculaPuntos(resultados,pronostico);
-                        } catch (ExceptionBuscaPuntos exceptionBuscaPuntos)
-                        {
-                            p=0;
-                        }
-                        pronostico.setPuntos(p);
-                        pronosticos.add(pronostico);
+                    // busco a la persona
+                    Persona personaAux = buscoPersona(campos[1],campos[2]);
+
+                    // busco partido
+                    Optional<Partido> partidoAux = partidos.stream().filter(a ->
+                            a.getEquipoid1().equals(campos[3])  && a.getEquipoid2().equals(campos[7])
+                                    && a.getRondaid().equals(campos[0]) ).findFirst();
+                    if (!partidoAux.isPresent()) {
+                        // No Existe Partido
+                        //System.out.print("Partido no encontrado");
+                        throw new ExceptionBuscaPuntos("Partido no encontrado , Ronda " +
+                                campos[0] + ", Equipo 1 : "  + campos[3] +
+                                ", Equipo2 : " + campos[7]);
+                    }
+                    // busco pronostico
+                    Optional<Pronostico> pronosticoAux = pronosticos.stream().filter(a ->
+                            a.getPartido().equals(partidoAux.get()) &&
+                            a.getPersona().equals(personaAux)).findFirst();
+                    if (!pronosticoAux.isPresent()) {
+                        // alta ponostico
+                        altaPronostico(personaAux,partidoAux.get(),campos[4],
+                                campos[5],campos[6] );
+                    } else {
+                        // Pronostico ya Existe
+                        //System.out.print("Pronostico ya Existe");
+                        throw new ExceptionBuscaPuntos("Partido no encontrado , Ronda " +
+                                campos[0] + ", Equipo 1 : "  + campos[3] +
+                                ", Equipo2 : " + campos[7]);
+                    }
                     } catch (Exception e) {
                         System.out.println("No se pudo Tratar la linea de Pronostico :  " + linea );
                         System.out.println(e.getMessage());
@@ -128,25 +150,112 @@ public class App
         }
     }
 
+
+    private static Persona buscoPersona(String id , String nombre ) {
+        Optional<Persona> personaAux = personas.stream().filter(a -> a.getIdPersona().equals(id)).findFirst();
+        if (!personaAux.isPresent()) {
+            // alta persona
+            Persona persona = new Persona(id,nombre ,0);
+            personas.add(persona);
+           return  persona;
+        }else{
+            return personaAux.get();
+        }
+    }
+
+    private static Ronda buscoRonda(String id , String nombre ) {
+        Optional<Ronda> rondaAux = rondas.stream().filter(a -> a.getRondaid().equals(id)).findFirst();
+        if (!rondaAux.isPresent()) {
+            // alta persona
+            Ronda ronda = new Ronda(id,nombre);
+            rondas.add(ronda);
+            return  ronda;
+        }else{
+            return rondaAux.get();
+        }
+    }
+    private static Pronostico altaPronostico(Persona persona, Partido partido,
+                                             String gana, String empata, String pierde)
+    {
+        EnumResultado resultadoAux = null;
+        boolean r = false;
+        Integer p = 0;
+        if (gana.equals("X") ) {
+            resultadoAux = EnumResultado.GANADOR;
+            if (partido.getEquipo1cantidadgoles() > partido.getEquipo2cantidadgoles()){
+                r = true;
+                p=1;
+            }
+        }
+        if (empata.equals("X") ) {
+            resultadoAux = EnumResultado.EMPATE;
+            if (partido.getEquipo1cantidadgoles() == partido.getEquipo2cantidadgoles()){
+                r = true;
+                p=1;
+            }
+        }
+        if (pierde.equals("X") ) {
+            resultadoAux = EnumResultado.PERDEDOR;
+            if (partido.getEquipo1cantidadgoles() < partido.getEquipo2cantidadgoles()){
+                r = true;
+                p=1;
+            }
+        }
+
+        Pronostico pronostico = new Pronostico( persona, partido ,resultadoAux ,r,p);
+        pronosticos.add(pronostico);
+        return pronostico;
+    }
+
+    private static void asignaBonus( ) {
+        // si la persona acertó todos los partidos de la ronda, le asignamos bonus
+        // recorro rondas
+
+        rondas.forEach((Ronda r) -> {
+            // leo cuantos partidos para cada ronda
+            Long todos ;
+            todos = partidos.stream().filter(a -> a.getRondaid().equals(r.getRondaid())).count();
+
+            for (int x = 0; x < personas.size(); x++) {
+                Persona p = personas.get(x);
+                // leo cuatos pronosticos certeros de para cada ronda persona
+                long ganados ;
+                ganados = pronosticos.stream().filter(a -> a.getPersonaid().equals(p.getIdPersona()) &&
+                    a.isValor()==true && a.getRondaidPartido().equals(r.getRondaid()) ).count();
+                if ( todos == ganados) {
+                    Persona personaAux = buscoPersona(p.getIdPersona(), "");
+                    personaAux.setPuntosextra(10);
+                    System.out.println ("Asignó Bonus ");
+                }
+            };
+        });
+    }
+
+
    private static void recorre(List<Pronostico> pronostico) {
-        // Totales x Rueda y Persona
+
+       // Totales x Rueda y Persona
+       Map<String, Map<String, Integer>> map2 = pronosticos.stream()
+               .collect(
+                       Collectors.groupingBy(Pronostico::getRondaidPartido,
+                               Collectors.groupingBy(Pronostico::getNombrePersona,
+                                       Collectors.summingInt(Pronostico::getPuntos))));
+
+       System.out.println ("Tabla de Puntos x Ronda");
+       map2.forEach((key, value) -> System.out.println(key + ":" + value));
+
+       // Totales x Persona
         Map<String, Integer> map = pronosticos.stream().collect(
-                Collectors.groupingBy(                            // I want a Map<Integer, Integer>
-                        Pronostico::getParticipantenombre,                              // price is the key
-                        Collectors.summingInt(Pronostico::getPuntos) ) ); // sum of quantities is the va
-        System.out.println ("Lista de Puntos Totales ");
-        map.forEach((key, value) -> System.out.println(key + ":" + value));
+                Collectors.groupingBy(
+                        Pronostico::getPersonaid,
+                        Collectors.summingInt(Pronostico::getPuntos) ) );
+        System.out.println ("Tabla de Puntos Totales ");
+        map.forEach((key, value) -> {
+            Persona pAux = buscoPersona(key, "");
+            Integer p = pAux.getPuntosextra() + value;
+            System.out.println(pAux.getNombre() + ":" + p.toString());
+        });
 
-        // Totales x Rueda y Persona
-        Map<String, Map<String, Integer>> map2 = pronosticos.stream()
-                .collect(
-                        Collectors.groupingBy(Pronostico::getRondaid,
-                                Collectors.groupingBy(Pronostico::getParticipantenombre,
-                                        Collectors.summingInt(Pronostico::getPuntos))));
-
-        System.out.println ("Lista de Puntos x Ronda");
-
-        map2.forEach((key, value) -> System.out.println(key + ":" + value));
 
 
     }
@@ -167,19 +276,20 @@ public class App
 
             // Obtener las distintas filas de la consulta
             while (rs.next()) {
-                // Obtener el valor de cada columna
-                Resultado resultado = new Resultado();
-                resultado.setRondaid(rs.getString("Rondaid"));
-                resultado.setRondanro(rs.getString("Rondanro"));
-                resultado.setEquipo1id(rs.getString("Equipo1id"));
-                resultado.setEquipo1nombre(rs.getString("Equipo1nombre"));
-                resultado.setEquipo1descripcion(rs.getString("Equipo1descripcion"));
-                resultado.setEquipo1cantidadgoles(rs.getInt("Equipo1cantidadgoles"));
-                resultado.setEquipo2cantidadgoles(rs.getInt("Equipo2cantidadgoles"));
-                resultado.setEquipo2id(rs.getString("Equipo2id"));
-                resultado.setEquipo2nombre(rs.getString("Equipo2nombre"));
-                resultado.setEquipo2descripcion(rs.getString("Equipo2descripcion"));
-                resultados.add(resultado);
+
+                Equipo equipo1 = new Equipo(rs.getString("Equipo1id"),rs.getString("Equipo1nombre")
+                        , rs.getString("Equipo1descripcion"));
+                Equipo equipo2 = new Equipo(rs.getString("Equipo12d"),rs.getString("Equipo2nombre")
+                        , rs.getString("Equipo2descripcion"));
+
+                // busco a ronda
+                Ronda rondaAux = buscoRonda(rs.getString("Rondaid"),rs.getString("Rondanro"));
+
+                Partido resultado = new Partido(rondaAux,
+                        equipo1, rs.getInt("Equipo1cantidadgoles"),
+                        rs.getInt("Equipo2cantidadgoles"),equipo2);
+                partidos.add(resultado);
+
             }
             // Esto se utiliza par cerrar la conexión con la base de datos
             rs.close();
@@ -220,19 +330,63 @@ public class App
             // Obtener las distintas filas de la consulta
             while (rs.next()) {
                 try {
-                    Pronostico pronostico = new Pronostico(rs.getString("Rondaid"),rs.getString("participanteid"),
-                            rs.getString("participantenombre") , rs.getString("equipo1id"),rs.getString("gana1"),
-                            rs.getString("empata"),rs.getString("gana2"),
-                            rs.getString("equipo2id"));
-                            Integer p=0;
-                    try {
-                        p = pronostico.calculaPuntos(resultados,pronostico);
-                    } catch (ExceptionBuscaPuntos exceptionBuscaPuntos)
+
+                    // busco a la persona
+                    Optional<Persona> personaAux = personas.stream().filter(a ->
                     {
-                        p=0;
+                        try {
+                            return a.getIdPersona().equals(rs.getString("participanteid"));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }).findFirst();
+                    if (!personaAux.isPresent()) {
+                        // alta persona
+                        Persona persona = new Persona(rs.getString("participanteid"),rs.getString("participantenombre"),0);
+                    } else {
+                        Persona persona = personaAux.get();
                     }
-                    pronostico.setPuntos(p);
-                    pronosticos.add(pronostico);
+
+                    // busco partido
+                    Optional<Partido> partidoAux = partidos.stream().filter(a ->
+                    {
+                        try {
+                            return a.getEquipoid1().equals(rs.getString("equipo1id"))
+                                    && a.getEquipoid2().equals(rs.getString("equipo2id"))
+                                    && a.getRondaid().equals(rs.getString("Rondaid"));
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }).findFirst();
+                    if (!partidoAux.isPresent()) {
+                        // No Existe Partido
+                        //System.out.print("Partido no encontrado");
+                        throw new ExceptionBuscaPuntos("Partido no encontrado , Ronda " +
+                                rs.getString("Rondaid") + ", Equipo 1 : "  + rs.getString("equipo1id") +
+                                ", Equipo2 : " + rs.getString("equipo2id"));
+                    }
+
+                    // busco pronostico
+                    Optional<Pronostico> pronosticoAux = pronosticos.stream().filter(a ->
+                            a.getPartido().equals(partidoAux)).findFirst();
+                    if (!pronosticoAux.isPresent()) {
+                        // alta ponostico
+
+                        altaPronostico(personaAux.get(), partidoAux.get(), rs.getString("gana1"),
+                                rs.getString("empata"),rs.getString("gana2"));
+
+                    } else {
+                        // Pronostico ya Existe
+                        //System.out.print("Pronostico ya Existe");
+                        throw new ExceptionBuscaPuntos("Pronostico ya Existe , Persona " +
+                                rs.getString("participantenombre") + " Ronda " +
+                                rs.getString("Rondaid") + ", Equipo 1 : " +
+                                rs.getString("equipo1id") + ", Equipo2 : " +
+                                rs.getString("equipo2id"));
+                    }
+
+
+
                 } catch ( Exception e) {
                     System.out.println(e.getMessage());
                 }
