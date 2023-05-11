@@ -5,18 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="70a12159-83b8-4e27-a4a9-900ae3e75525" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/modelos/Equipo/Equipo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/modelos/Partido/Partido.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/modelos/Persona/Persona.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/modelos/Ronda/Ronda.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/modelos/Pronostico/Pronostico.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/modelos/Pronostico/Pronostico.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/modelos/Resultado/Resultado.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/dominioTest/PronosticoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/dominioTest/PronosticoTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/modelos/Pronostico/Pronostico.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/modelos/Pronostico/Pronostico.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/modelos/Resultado/Resultado.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/App.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/App.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/resources/pronostico.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/resources/pronostico.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/resources/resultados.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/resources/resultados.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +39,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Leo/Documents/Cursos/UTN/G9TP1.v1&quot;
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Leo/Documents/Cursos/UTN/AP-0405&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -116,11 +108,21 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/example/App.java</url>
-          <line>117</line>
+          <line>118</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />
           </properties>
           <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/App.java</url>
+          <line>321</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/example/App.java</url>
+          <line>336</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

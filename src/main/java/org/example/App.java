@@ -33,8 +33,9 @@ public class App
     static List<Pronostico> pronosticos = new ArrayList<>();
     static List<Ronda> rondas = new ArrayList<>();
 
-    static String pathResultado = "C:\\temp\\resultados.csv";
-    static String pathPronostico = "C:\\temp\\pronostico.csv";
+    static String pathResultado = "src\\main\\java\\resources\\resultados.csv";
+
+    static String pathPronostico = "src\\main\\java\\resources\\pronostico.csv";
 
     static Connection conexion = null;
     static Statement consulta = null;
@@ -174,6 +175,7 @@ public class App
             return rondaAux.get();
         }
     }
+
     private static Pronostico altaPronostico(Persona persona, Partido partido,
                                              String gana, String empata, String pierde)
     {
@@ -279,7 +281,7 @@ public class App
 
                 Equipo equipo1 = new Equipo(rs.getString("Equipo1id"),rs.getString("Equipo1nombre")
                         , rs.getString("Equipo1descripcion"));
-                Equipo equipo2 = new Equipo(rs.getString("Equipo12d"),rs.getString("Equipo2nombre")
+                Equipo equipo2 = new Equipo(rs.getString("Equipo2id"),rs.getString("Equipo2nombre")
                         , rs.getString("Equipo2descripcion"));
 
                 // busco a ronda
@@ -332,20 +334,7 @@ public class App
                 try {
 
                     // busco a la persona
-                    Optional<Persona> personaAux = personas.stream().filter(a ->
-                    {
-                        try {
-                            return a.getIdPersona().equals(rs.getString("participanteid"));
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }).findFirst();
-                    if (!personaAux.isPresent()) {
-                        // alta persona
-                        Persona persona = new Persona(rs.getString("participanteid"),rs.getString("participantenombre"),0);
-                    } else {
-                        Persona persona = personaAux.get();
-                    }
+                    Persona personaAux = buscoPersona(rs.getString("participanteid"),rs.getString("participantenombre"));
 
                     // busco partido
                     Optional<Partido> partidoAux = partidos.stream().filter(a ->
@@ -372,7 +361,7 @@ public class App
                     if (!pronosticoAux.isPresent()) {
                         // alta ponostico
 
-                        altaPronostico(personaAux.get(), partidoAux.get(), rs.getString("gana1"),
+                        altaPronostico(personaAux, partidoAux.get(), rs.getString("gana1"),
                                 rs.getString("empata"),rs.getString("gana2"));
 
                     } else {
